@@ -8,6 +8,7 @@
  * Creates a Player with customizable Location and Size (2 constructors)
  * Adds movement to Player with variable speed
  * Adds animation to Player (Character) based on direction
+ * Adds collision between Player (Character) and an invisible rectangle
  */
 public class Main {
 

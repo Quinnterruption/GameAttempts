@@ -9,6 +9,8 @@ public class GameFrame {
     Player player;
     private final Set<String> keyDown = new HashSet<>();
     public boolean running;
+    int moveX;
+    int moveY;
 
     /**
      * First constructor for GameFrame with 2 parameters
@@ -96,27 +98,70 @@ public class GameFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
-        move();
+        move(1, 1);
     }
 
     /**
      * Checks the KeyDown hashset and moves Character (Player) accordingly
      */
-    public void move() {
+    public void move(int xMove, int yMove) {
+        moveX = xMove;
+        moveY = yMove;
         if(keyDown.contains("up")) {
-            player.character.setLocation(player.character.getX(), player.character.getY() - 1);
-            player.animate("Back", 150);
+            if(collision() || !collision()) {
+                player.character.setLocation(player.character.getX(), player.character.getY() - yMove);
+                player.animate("Back", 150);
+            }
         } else if(keyDown.contains("down")) {
-            player.character.setLocation(player.character.getX(), player.character.getY() + 1);
-            player.animate("Front", 150);
+            if(collision() || !collision()) {
+                player.character.setLocation(player.character.getX(), player.character.getY() + yMove);
+                player.animate("Front", 150);
+            }
         }
         if(keyDown.contains("left")) {
-            player.character.setLocation(player.character.getX() - 1, player.character.getY());
-            player.animate("Left", 50);
+            if(collision() || !collision()) {
+                player.character.setLocation(player.character.getX() - xMove, player.character.getY());
+                player.animate("Left", 50);
+            }
         } else if(keyDown.contains("right")) {
-            player.character.setLocation(player.character.getX() + 1, player.character.getY());
-            player.animate("Right", 50);
+            if(collision() || !collision()) {
+                player.character.setLocation(player.character.getX() + xMove, player.character.getY());
+                player.animate("Right", 50);
+            }
         }
+    }
+
+    /**
+     * Checks Collisions of Player (Character) and another Rectangle
+     * Rect2 will eventually become dynamic
+     * @return true when Player (Character) intersects Rect2
+     */
+    public boolean collision() {
+        Rectangle rect1 = new Rectangle(player.character.getX(), player.character.getY(), player.charWidth, player.charHeight);
+        Rectangle rect2 = new Rectangle(300, 300, 50, 50);
+
+        double w = 0.5 * (rect2.width + rect1.width);
+        double h = 0.5 * (rect2.height + rect1.height);
+        double dx = rect2.getCenterX() - rect1.getCenterX();
+        double dy = rect2.getCenterY() - rect1.getCenterY();
+
+        if(rect1.intersects(rect2)) {
+            double wy = w * dy;
+            double hx = h * dx;
+            if(wy >= hx) {
+                if(wy >= -hx) { // On top of block
+                    player.character.setLocation(player.character.getX(), player.character.getY() - moveY);
+                } else { // Right of block
+                    player.character.setLocation(player.character.getX() + moveX, player.character.getY());
+                }
+            } else {
+                if(wy >= -hx) { // Left of block
+                    player.character.setLocation(player.character.getX() - moveX, player.character.getY());
+                } else { // Bottom of block
+                    player.character.setLocation(player.character.getX(), player.character.getY() + moveY);
+                }
+            } return true;
+        } else return false;
     }
 
     /**

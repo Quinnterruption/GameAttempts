@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Player {
     JLabel character = new JLabel();
+    Rectangle rect;
     ImageIcon searchIcon;
     Image image;
     int animateTimer;
@@ -58,6 +59,11 @@ public class Player {
         character.setBounds(x, y, width, height);
     }
 
+    /**
+     * Creates an Animation for the Character based on the Direction being moved
+     * @param direction sets the Direction for the conditions
+     * @param startTime sets a base number to auto start
+     */
     public void animate(String direction, int startTime) {
         animateTimer++;
         if(direction == "Front" || direction == "Back") {
