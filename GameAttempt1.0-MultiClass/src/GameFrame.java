@@ -24,7 +24,7 @@ public class GameFrame {
 
     /**
      * Second constructor for GameFrame with 4 parameters
-     * Adds a new Player (Character
+     * Adds a new Player (Character)
      * @param x sets the X location of GameFrame
      * @param y sets the Y location of GameFrame
      * @param width sets the Width of GameFrame
