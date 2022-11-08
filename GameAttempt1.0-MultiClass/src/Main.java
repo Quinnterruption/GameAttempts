@@ -3,10 +3,11 @@
  *
  * @author Quinn Morrow
  *
- * @version 1.0
+ * @version 1.1
  * Creates a JFrame with customizable Location and Size (2 constructors)
  * Creates a Player with customizable Location and Size (2 constructors)
  * Adds movement to Player with variable speed
+ * Adds animation to Player (Character) based on direction
  */
 public class Main {
 

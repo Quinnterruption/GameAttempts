@@ -4,6 +4,13 @@ import java.util.*;
 
 public class Player {
     JLabel character = new JLabel();
+    ImageIcon searchIcon;
+    Image image;
+    int animateTimer;
+    int frame;
+    int charWidth;
+    int charHeight;
+    int percent;
 
     /**
      * First constructor for Player with 2 parameters
@@ -13,12 +20,16 @@ public class Player {
      */
     @SuppressWarnings("unused")
     public Player(int x, int y) {
-        ImageIcon searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
-        Image image = searchIcon.getImage();
+        searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
+        image = searchIcon.getImage();
         Image newImg = image.getScaledInstance(64, 92,  java.awt.Image.SCALE_SMOOTH);
         searchIcon = new ImageIcon(newImg);
 
+        charWidth = searchIcon.getIconWidth();
+        charHeight = searchIcon.getIconHeight();
+
         character.setIcon(searchIcon);
+        frame = 1;
 
         character.setBounds(x, y, 64, 92);
     }
@@ -33,13 +44,48 @@ public class Player {
      */
     @SuppressWarnings("unused")
     public Player(int x, int y, int width, int height) {
-        ImageIcon searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
-        Image image = searchIcon.getImage();
+        searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
+        image = searchIcon.getImage();
         Image newImg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH);
         searchIcon = new ImageIcon(newImg);
 
+        charWidth = searchIcon.getIconWidth();
+        charHeight = searchIcon.getIconHeight();
+
         character.setIcon(searchIcon);
+        frame = 1;
 
         character.setBounds(x, y, width, height);
+    }
+
+    public void animate(String direction, int startTime) {
+        animateTimer++;
+        if(direction == "Front" || direction == "Back") {
+            percent = 175;
+        } else {
+            percent = 75;
+        }
+        if((animateTimer + startTime) % percent == 0) {
+            if (frame == 1) {
+                searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "1.png")));
+                image = searchIcon.getImage();
+                Image newImg = image.getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
+                searchIcon = new ImageIcon(newImg);
+                frame = 2;
+            } else if (frame == 2) {
+                    searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "2.png")));
+                    image = searchIcon.getImage();
+                    Image newImg = image.getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
+                    searchIcon = new ImageIcon(newImg);
+                    frame = 3;
+            } else if (frame == 3) {
+                    searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "3.png")));
+                    image = searchIcon.getImage();
+                    Image newImg = image.getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
+                    searchIcon = new ImageIcon(newImg);
+                    frame = 1;
+            }
+            character.setIcon(searchIcon);
+        }
     }
 }

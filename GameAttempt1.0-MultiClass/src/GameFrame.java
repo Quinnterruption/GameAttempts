@@ -105,13 +105,17 @@ public class GameFrame {
     public void move() {
         if(keyDown.contains("up")) {
             player.character.setLocation(player.character.getX(), player.character.getY() - 1);
+            player.animate("Back", 150);
         } else if(keyDown.contains("down")) {
             player.character.setLocation(player.character.getX(), player.character.getY() + 1);
+            player.animate("Front", 150);
         }
         if(keyDown.contains("left")) {
             player.character.setLocation(player.character.getX() - 1, player.character.getY());
+            player.animate("Left", 50);
         } else if(keyDown.contains("right")) {
             player.character.setLocation(player.character.getX() + 1, player.character.getY());
+            player.animate("Right", 50);
         }
     }
 
