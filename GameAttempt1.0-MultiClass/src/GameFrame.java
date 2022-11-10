@@ -7,6 +7,12 @@ import java.util.logging.*;
 public class GameFrame {
     JFrame frame1 = new JFrame();
     Player player;
+    Block[] blocks;
+    int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+    int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+    int blkSize = 96;
+    int blkLimit = (screenWidth / blkSize);
+    Random random = new Random();
     private final Set<String> keyDown = new HashSet<>();
     public boolean running;
     int moveX;
@@ -14,19 +20,23 @@ public class GameFrame {
 
     /**
      * First constructor for GameFrame with 2 parameters
-     * Adds a new Player (Character)
+     * also adds a new Player (Character) and a new Block (Platform)
      * @param x sets the X location of GameFrame
      * @param y sets the Y location of GameFrame
      */
     @SuppressWarnings("unused")
     public GameFrame(int x, int y) {
         player = new Player(100, 100, 56, 80);
+        blocks = new Block[blkLimit];
+        for(int i = 0; i < blkLimit; i++) {
+            blocks[i] = new Block((i * blkSize), random.nextInt(screenHeight - blkSize), blkSize);
+        }
         start(x, y);
     }
 
     /**
      * Second constructor for GameFrame with 4 parameters
-     * Adds a new Player (Character)
+     * also adds a new Player (Character) and a new Block (Platform)
      * @param x sets the X location of GameFrame
      * @param y sets the Y location of GameFrame
      * @param width sets the Width of GameFrame
@@ -35,6 +45,10 @@ public class GameFrame {
     @SuppressWarnings("unused")
     public GameFrame(int x, int y, int width, int height) {
         player = new Player(100, 100, 56, 80);
+        blocks = new Block[blkLimit];
+        for(int i = 0; i < blkLimit; i++) {
+            blocks[i] = new Block((i * blkSize), random.nextInt(screenHeight - blkSize), blkSize);
+        }
         start(x, y, width, height);
     }
 
@@ -55,6 +69,9 @@ public class GameFrame {
 
         Container c = frame1.getContentPane();
 
+        for(int i = 0; i < blkLimit; i++) {
+            c.add(blocks[i].plat);
+        }
         c.add(player.character);
         frame1.setVisible(true);
         while(running) {
@@ -81,6 +98,9 @@ public class GameFrame {
 
         Container c = frame1.getContentPane();
 
+        for(int i = 0; i < blkLimit; i++) {
+            c.add(blocks[i].plat);
+        }
         c.add(player.character);
         frame1.setVisible(true);
         while(running) {
@@ -89,8 +109,7 @@ public class GameFrame {
     }
 
     /**
-     * Runs the Move method once every 2 milliseconds
-     * Controls the frames per seconds to make sure Character (Player) doesn't fly off the screen
+     * Runs once every 2 milliseconds and essentially sets FPS
      */
     public void act() {
         try {
@@ -103,65 +122,93 @@ public class GameFrame {
 
     /**
      * Checks the KeyDown hashset and moves Character (Player) accordingly
+     * also runs the correct Animation for each movement
+     *
+     * @Notes the redundancy is necessary for having the correct Animations and Collisions
+     *
+     * @param xMove sets the movement speed for the X axis (Left and Right)
+     * @param yMove sets the movement speed for the Y axis (Up and Down)
      */
     public void move(int xMove, int yMove) {
         moveX = xMove;
         moveY = yMove;
-        if(keyDown.contains("up")) {
-            if(collision() || !collision()) {
-                player.character.setLocation(player.character.getX(), player.character.getY() - yMove);
-                player.animate("Back", 150);
-            }
-        } else if(keyDown.contains("down")) {
-            if(collision() || !collision()) {
-                player.character.setLocation(player.character.getX(), player.character.getY() + yMove);
-                player.animate("Front", 150);
-            }
-        }
-        if(keyDown.contains("left")) {
-            if(collision() || !collision()) {
-                player.character.setLocation(player.character.getX() - xMove, player.character.getY());
-                player.animate("Left", 50);
-            }
-        } else if(keyDown.contains("right")) {
-            if(collision() || !collision()) {
+        collision();
+        if (keyDown.contains("right")) {
+            player.animateOnce = 0;
+            collision();
+            if (keyDown.contains("up")) {
+                player.character.setLocation(player.character.getX() + xMove, player.character.getY() - yMove);
+                player.animate("Right", 50, 75);
+            } else if (keyDown.contains("down")) {
+                player.character.setLocation(player.character.getX() + xMove, player.character.getY() + yMove);
+                player.animate("Right", 50, 75);
+            } else {
                 player.character.setLocation(player.character.getX() + xMove, player.character.getY());
-                player.animate("Right", 50);
+                player.animate("Right", 50, 75);
             }
+        } else if (keyDown.contains("left")) {
+            player.animateOnce = 0;
+            collision();
+            if (keyDown.contains("up")) {
+                player.character.setLocation(player.character.getX() - xMove, player.character.getY() - yMove);
+                player.animate("Left", 50, 75);
+            } else if (keyDown.contains("down")) {
+                player.character.setLocation(player.character.getX() - xMove, player.character.getY() + yMove);
+                player.animate("Left", 50, 75);
+            } else {
+                player.character.setLocation(player.character.getX() - xMove, player.character.getY());
+                player.animate("Left", 50, 75);
+            }
+        } else if (keyDown.contains("up")) {
+            player.animateOnce = 0;
+            player.character.setLocation(player.character.getX(), player.character.getY() - yMove);
+            player.animate("Back", 150, 175);
+        } else if (keyDown.contains("down")) {
+            player.animateOnce = 0;
+            player.character.setLocation(player.character.getX(), player.character.getY() + yMove);
+            player.animate("Front", 150, 175);
+        } else {
+            while(player.animateOnce < 1) {
+                player.animateTimer = 0;
+                player.animateOnce++;
+            }
+            player.animate("Front", 275, 350);
         }
     }
 
     /**
-     * Checks Collisions of Player (Character) and another Rectangle
-     * Rect2 will eventually become dynamic
-     * @return true when Player (Character) intersects Rect2
+     * Checks Collisions of Player (Character) and every Block (blocks[])
      */
-    public boolean collision() {
-        Rectangle rect1 = new Rectangle(player.character.getX(), player.character.getY(), player.charWidth, player.charHeight);
-        Rectangle rect2 = new Rectangle(300, 300, 50, 50);
+    public void collision() {
+        Rectangle playerRect = new Rectangle(player.character.getX(), player.character.getY(), player.charWidth, player.charHeight);
 
-        double w = 0.5 * (rect2.width + rect1.width);
-        double h = 0.5 * (rect2.height + rect1.height);
-        double dx = rect2.getCenterX() - rect1.getCenterX();
-        double dy = rect2.getCenterY() - rect1.getCenterY();
+        for (int i = 0; i < blkLimit; i++) {
+            Rectangle blockRect = new Rectangle(blocks[i].plat.getX(), blocks[i].plat.getY(), blocks[i].platWidth, blocks[i].platHeight);
 
-        if(rect1.intersects(rect2)) {
-            double wy = w * dy;
-            double hx = h * dx;
-            if(wy >= hx) {
-                if(wy >= -hx) { // On top of block
-                    player.character.setLocation(player.character.getX(), player.character.getY() - moveY);
-                } else { // Right of block
-                    player.character.setLocation(player.character.getX() + moveX, player.character.getY());
+            double w = 0.5 * (blockRect.width + playerRect.width);
+            double h = 0.5 * (blockRect.height + playerRect.height);
+            double dx = blockRect.getCenterX() - playerRect.getCenterX();
+            double dy = blockRect.getCenterY() - playerRect.getCenterY();
+
+            if (playerRect.intersects(blockRect)) {
+                double wy = w * dy;
+                double hx = h * dx;
+                if (wy >= hx) {
+                    if (wy >= -hx) { // On top of block
+                        player.character.setLocation(player.character.getX(), player.character.getY() - moveY);
+                    } else { // Right of block
+                        player.character.setLocation(player.character.getX() + moveX, player.character.getY());
+                    }
+                } else {
+                    if (wy >= -hx) { // Left of block
+                        player.character.setLocation(player.character.getX() - moveX, player.character.getY());
+                    } else { // Bottom of block
+                        player.character.setLocation(player.character.getX(), player.character.getY() + moveY);
+                    }
                 }
-            } else {
-                if(wy >= -hx) { // Left of block
-                    player.character.setLocation(player.character.getX() - moveX, player.character.getY());
-                } else { // Bottom of block
-                    player.character.setLocation(player.character.getX(), player.character.getY() + moveY);
-                }
-            } return true;
-        } else return false;
+                i = blkLimit;
+            }
+        }
     }
 
     /**

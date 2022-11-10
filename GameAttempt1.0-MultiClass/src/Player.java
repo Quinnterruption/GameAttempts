@@ -4,22 +4,21 @@ import java.util.*;
 
 public class Player {
     JLabel character = new JLabel();
-    Rectangle rect;
     ImageIcon searchIcon;
     Image image;
+    int animateOnce;
     int animateTimer;
     int frame;
     int charWidth;
     int charHeight;
-    int percent;
 
     /**
      * First constructor for Player with 2 parameters
-     * Creates Character
+     * and creates Character
      * @param x sets the X location of Character
      * @param y sets the Y location of Character
      */
-    @SuppressWarnings("unused")
+     @SuppressWarnings("unused")
     public Player(int x, int y) {
         searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
         image = searchIcon.getImage();
@@ -37,7 +36,7 @@ public class Player {
 
     /**
      * Second constructor for Player with 4 parameters
-     * Creates Character
+     * and creates Character
      * @param x sets the X location of Character
      * @param y sets the Y location of Character
      * @param width sets the Width of Character
@@ -64,13 +63,8 @@ public class Player {
      * @param direction sets the Direction for the conditions
      * @param startTime sets a base number to auto start
      */
-    public void animate(String direction, int startTime) {
+    public void animate(String direction, int startTime, int percent) {
         animateTimer++;
-        if(direction == "Front" || direction == "Back") {
-            percent = 175;
-        } else {
-            percent = 75;
-        }
         if((animateTimer + startTime) % percent == 0) {
             if (frame == 1) {
                 searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "1.png")));

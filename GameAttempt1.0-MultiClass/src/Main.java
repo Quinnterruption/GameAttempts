@@ -3,12 +3,11 @@
  *
  * @author Quinn Morrow
  *
- * @version 1.1
- * Creates a JFrame with customizable Location and Size (2 constructors)
- * Creates a Player with customizable Location and Size (2 constructors)
- * Adds movement to Player with variable speed
- * Adds animation to Player (Character) based on direction
- * Adds collision between Player (Character) and an invisible rectangle
+ * @version 1.2
+ * @Description Added better Animation for Player (Character)
+ * Made an array for Block (blocks[]) that enables the use of multiple Block
+ * Fixed Collision to now work with multiple Block and run more efficiently
+ * Added Size parameter to Block
  */
 public class Main {
 
