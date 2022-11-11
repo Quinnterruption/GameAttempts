@@ -3,11 +3,9 @@
  *
  * @author Quinn Morrow
  *
- * @version 1.2
- * @Description Added better Animation for Player (Character)
- * Made an array for Block (blocks[]) that enables the use of multiple Block
- * Fixed Collision to now work with multiple Block and run more efficiently
- * Added Size parameter to Block
+ * @version 1.3
+ * @Description Changed the spawning method to now use ArrayList fed into an Array
+ * Added Image parameter in Block class to customize the image
  */
 public class Main {
 

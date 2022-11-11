@@ -8,11 +8,12 @@ public class GameFrame {
     JFrame frame1 = new JFrame();
     Player player;
     Block[] blocks;
-//    int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-//    int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+    ArrayList<Block> blockList = new ArrayList<>();
+    int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+    int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
     int blkSize = 96;
-    int blkLimit = 5;
-//    Random random = new Random();
+    int blkLimit;
+    Random random = new Random();
     private final Set<String> keyDown = new HashSet<>();
     public boolean running;
     int moveX;
@@ -48,21 +49,26 @@ public class GameFrame {
      * Adds every JLabel to the world
      */
     public void populateWorld() {
-//        if(screenWidth % blkSize != 0) {
-//            blkLimit = (screenWidth/blkSize) + 1;
-//        } else {
-//            blkLimit = (screenWidth/blkSize);
-//        }
+        /* Code below used to create a row of Blocks as long as the screen
+            if(screenWidth % blkSize != 0) {
+                blkLimit = (screenWidth/blkSize) + 1;
+            } else {
+                blkLimit = (screenWidth/blkSize);
+            }
+            for(int i = 0; i < blkLimit; i++) {
+                 blockList.add(new Block((i*blkSize), 300, "grass.png", blkSize));
+            }
+        */
+
         player = new Player(100, 100, 56, 80);
-        blocks = new Block[blkLimit];
-        blocks[0] = new Block(0, 300, "grass.png", blkSize);
-        blocks[1] = new Block(blkSize, 300, "grass.png", blkSize);
-        blocks[2] = new Block(blkSize*2, 300, "dirt.png", blkSize);
-        blocks[3] = new Block(blkSize*2, 300-blkSize, "dirt.png", blkSize);
-        blocks[4] = new Block(blkSize*2, 300-(blkSize*2), "grass.png", blkSize);
-//        for(int i = 0; i < blkLimit; i++) {
-//            blocks[i] = new Block((i * blkSize), random.nextInt(screenHeight - blkSize), "grass.png", blkSize);
-//        }
+
+        blockList.add(new Block(0, 300, "grass.png", blkSize));
+        blockList.add(new Block(blkSize, 300, "grass.png", blkSize));
+        blockList.add(new Block(blkSize*2, 300, "dirt.png", blkSize));
+        blockList.add(new Block(blkSize*2, 300-blkSize, "dirt.png", blkSize));
+        blockList.add(new Block(blkSize*2, 300-(blkSize*2), "grass.png", blkSize));
+        blocks = new Block[blockList.size()];
+        blocks = blockList.toArray(blocks);
     }
 
     /**
@@ -82,7 +88,7 @@ public class GameFrame {
 
         Container c = frame1.getContentPane();
 
-        for (int i = 0; i < Arrays.stream(blocks).count(); i++) c.add(blocks[i].plat);
+        for (Block block : blocks) c.add(block.plat);
         c.add(player.character);
         frame1.setVisible(true);
         while(running) {
@@ -109,7 +115,7 @@ public class GameFrame {
 
         Container c = frame1.getContentPane();
 
-        for (int i = 0; i < Arrays.stream(blocks).count(); i++) c.add(blocks[i].plat);
+        for (Block block : blocks) c.add(block.plat);
         c.add(player.character);
         frame1.setVisible(true);
         while(running) {
@@ -209,7 +215,7 @@ public class GameFrame {
                         player.character.setLocation(player.character.getX(), player.character.getY() + moveY);
                     }
                 }
-                i = blkLimit;
+                i = blocks.length;
             }
         }
     }
