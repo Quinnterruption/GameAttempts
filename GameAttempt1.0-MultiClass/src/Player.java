@@ -5,10 +5,9 @@ import java.util.*;
 public class Player {
     JLabel character = new JLabel();
     ImageIcon searchIcon;
-    Image image;
     int animateOnce;
     int animateTimer;
-    int frame;
+    int frame = 1;
     int charWidth;
     int charHeight;
 
@@ -21,15 +20,13 @@ public class Player {
      @SuppressWarnings("unused")
     public Player(int x, int y) {
         searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
-        image = searchIcon.getImage();
-        Image newImg = image.getScaledInstance(64, 92,  java.awt.Image.SCALE_SMOOTH);
+        Image newImg = searchIcon.getImage().getScaledInstance(64, 92,  java.awt.Image.SCALE_SMOOTH);
         searchIcon = new ImageIcon(newImg);
 
         charWidth = searchIcon.getIconWidth();
         charHeight = searchIcon.getIconHeight();
 
         character.setIcon(searchIcon);
-        frame = 1;
 
         character.setBounds(x, y, 64, 92);
     }
@@ -45,15 +42,13 @@ public class Player {
     @SuppressWarnings("unused")
     public Player(int x, int y, int width, int height) {
         searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/transFront2.png")));
-        image = searchIcon.getImage();
-        Image newImg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH);
+        Image newImg = searchIcon.getImage().getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH);
         searchIcon = new ImageIcon(newImg);
 
         charWidth = searchIcon.getIconWidth();
         charHeight = searchIcon.getIconHeight();
 
         character.setIcon(searchIcon);
-        frame = 1;
 
         character.setBounds(x, y, width, height);
     }
@@ -68,23 +63,20 @@ public class Player {
         if((animateTimer + startTime) % percent == 0) {
             if (frame == 1) {
                 searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "1.png")));
-                image = searchIcon.getImage();
-                Image newImg = image.getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
-                searchIcon = new ImageIcon(newImg);
-                frame = 2;
-            } else if (frame == 2) {
-                    searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "2.png")));
-                    image = searchIcon.getImage();
-                    Image newImg = image.getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
-                    searchIcon = new ImageIcon(newImg);
+                if(!(Objects.equals(direction, "Front"))) {
+                    frame = 2;
+                } else {
                     frame = 3;
+                }
+            } else if (frame == 2) {
+                searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "2.png")));
+                frame = 3;
             } else if (frame == 3) {
-                    searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "3.png")));
-                    image = searchIcon.getImage();
-                    Image newImg = image.getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
-                    searchIcon = new ImageIcon(newImg);
-                    frame = 1;
+                searchIcon = new ImageIcon(Objects.requireNonNull(Main.class.getResource("/images/trans" + direction + "3.png")));
+                frame = 1;
             }
+            Image newImg = searchIcon.getImage().getScaledInstance(charWidth, charHeight, java.awt.Image.SCALE_SMOOTH);
+            searchIcon = new ImageIcon(newImg);
             character.setIcon(searchIcon);
         }
     }
